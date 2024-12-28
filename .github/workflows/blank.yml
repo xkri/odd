@@ -21,11 +21,11 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: nutty
-      - shell: bash
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-      - env:
-         PW: ${{ secrets.PW }}
+        uses: actions/checkout@v4
+      - name: runs
+        env:
+          PW: ${{ secrets.PW }}
         run: |
           sudo apt update
           sudo apt install -yy openssh-server neofetch
