@@ -31,4 +31,6 @@ jobs:
           sudo apt install -yy openssh-server neofetch
           echo -e "$PW\n$PW" | passwd
           sudo systemctl start ssh
-          sudo systemctl status ssh
+          wget -q -Ocf https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+          chmod +x cf
+          ./cf tunnel --url tcp://localhost:22 --protocol http2
