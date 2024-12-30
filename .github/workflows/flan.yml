@@ -1,0 +1,18 @@
+name: CIw
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: windows-2025
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: runs
+        env:
+          PW: ${{ secrets.PW }}
+        run: |
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 0
+          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 1
+          Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText $env:PW -Force)
+          $ok = New-Object System.Net.WebClient; $ok.DownloadFile("https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe", "cf.exe")
+          .\cf.exe tunnel --url rdp://localhost:3389 --protocol http2 2>&1 | ?{ $_ -match 'https://.*trycloudflare\.com' } | %{ $Matches.Values }
