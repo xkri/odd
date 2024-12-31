@@ -11,6 +11,8 @@ jobs:
         env:
           PW: ${{ secrets.PW }}
         run: |
+          echo 'set man-db/auto-update false' | sudo debconf-communicate
+          sudo dpkg-reconfigure man-db
           sudo apt update
           sudo apt install -yy openssh-server neofetch
           echo -e "$PW\n$PW" | passwd
